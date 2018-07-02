@@ -3,8 +3,8 @@
 ## 小组分工
 
 | 学号     | 姓名   | github id                                     | 分工                                    | 贡献率 |
-| -------- | ------ | --------------------------------------------- | --------------------------------------- | ------ |
-| 15331344 | 薛明淇 | [VinaLx](https://github.com/VinaLx)           | 语言设计、Parser、Lexer、TypeSystem实现 |        |
+|:--------:|:------:| --------------------------------------------- | --------------------------------------- |:------:|
+| 15331344 | 薛明淇 | [VinaLx](https://github.com/VinaLx)           | 语言设计、Lexer、Parser、TypeSystem实现 |  50%   |
 | 15331224 | 卢家熙 | [DaddyTrap](https://github.com/DaddyTrap)     |                                         |        |
 | 15331115 | 黄锦添 | [jskyzero](https://github.com/jskyzero)       |                                         |        |
 | 15331112 | 黄鼎   | [Algebra2016](https://github.com/Algebra2016) |                                         |        |
