@@ -6,7 +6,7 @@
 |:--------:|:------:| --------------------------------------------- | --------------------------------------- |:------:|
 | 15331344 | 薛明淇 | [VinaLx](https://github.com/VinaLx)           | 语言设计、Lexer、Parser、TypeSystem实现 |  50%   |
 | 15331224 | 卢家熙 | [DaddyTrap](https://github.com/DaddyTrap)     |                                         |        |
-| 15331115 | 黄锦添 | [jskyzero](https://github.com/jskyzero)       |                                         |        |
+| 15331115 | 黄锦添 | [jskyzero](https://github.com/jskyzero)       | 部分Scope、PipeLine实现、附属文档编写                                        |        |
 | 15331112 | 黄鼎   | [Algebra2016](https://github.com/Algebra2016) |                                         |        |
 
 ### 制品与贡献率
@@ -17,8 +17,9 @@
 |      | Scope           |        |        |        |      |
 |      | Type System     | 100%   |        |        |      |
 |      | Code Generation |        | 100%   |        |      |
-| 文档 | 安装部署说明    |        |        |        |      |
+|      | PipeLine        |        |        | 100%   |      |
+| 文档 | 安装部署说明    |        |        | 100%   |      |
 |      | 用户手册        |        |        |        |      |
-|      | 需求规格说明    |        |        |        |      |
+|      | 需求规格说明    |        |        |100%   |      |
 |      | 软件设计文档    | 50%    | 30%    | 20%    |      |
 
