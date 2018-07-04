@@ -23,6 +23,6 @@
 软件源代码和测试代码  
 如过代码模块、层次较为复杂，则应给出目录说明与索引   
 
-### 2.3 [`SRS`](https://github.com/Sushiscript/course-docs/blob/master/Software%20Requirements%20Specification.md)**
+### 2.3 [`SRS`](https://github.com/Sushiscript/course-docs/blob/master/Software%20Requirements%20Specification.md)
 繁简皆宜，项目组灵活选择   
 对于所有的系统需求，项目组成员必须基于SRS，有完全相同的理解
