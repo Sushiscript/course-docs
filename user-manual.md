@@ -43,6 +43,7 @@ cmake .. && make install
 ## 语言参考
 
 - [language specification](https://github.com/Sushiscript/sushiscript/blob/master/docs/language-specification.md)
+- [syntax quick guide](https://github.com/Sushiscript/sushiscript/blob/master/Readme.md)
 
 ### 整合与命令行接口
 
