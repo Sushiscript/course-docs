@@ -99,10 +99,10 @@ Environment 中提供 通过`Program`（语法上函数体/if语句主体等称�
 ### 整合与命令行接口
 
 命令行接口部分工作总体难度较低，可以划分为
-1. 制定命令行参数标准。这里参考了`python`，`javac`，`dotnet`等的参数设计，最终敲定。
-2. 实现命令行参数处理部分并添加测试样例。这个就是简单的字符序列的处理，测试也比较容易。
-3. 调用前几层的工作转换`sushiscript`为`shell script`。这是整个程序的核心部分，中间需要对前几个层次的异常做出处理。
-4. 将各个`pipeline`部分串联起来，比如使用一个`config`来传递参数，`run`和`build`公用相同的核心处理函数。
+1. 制定[命令行参数标准](https://github.com/Sushiscript/sushiscript/blob/master/include/sushi/pipeline/config.h)。这里参考了`python`，`javac`，`dotnet`等的参数设计，最终敲定。
+2. 实现[命令行参数处理部分](https://github.com/Sushiscript/sushiscript/blob/master/src/sushi/pipeline/pipeline.cpp)并添加[测试样例](https://github.com/Sushiscript/sushiscript/blob/master/test/pipeline/parser.cpp)。这个就是简单的字符序列的处理，测试也比较容易。
+3. [调用前几层的工作](https://github.com/Sushiscript/sushiscript/blob/master/src/sushi/pipeline/pipeline.cpp)转换`sushiscript`为`shell script`。这是整个程序的核心部分，中间需要对前几个层次的异常做出处理。
+4. 将各个`pipeline`部分[串联起来](https://github.com/Sushiscript/sushiscript/blob/master/src/sushi/pipeline/pipeline.cpp)，比如使用一个`config`来传递参数，`run`和`build`公用相同的核心处理函数。
 
 ## 未来工作
 
