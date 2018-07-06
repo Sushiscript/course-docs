@@ -42,17 +42,17 @@
 
 `sushiscript`的词法和语法分析器是完全手写的，且基于一个[`LookaheadStream`](https://github.com/Sushiscript/sushiscript/blob/master/include/sushi/lexer/detail/lookahead-stream.h)的抽象，这个抽象使得我们可以轻易地在不消耗字符流的情况下获取字符流头部的内容，这样不管在控制字符流（[`sushi/lexer/detail/source-stream.h`](https://github.com/Sushiscript/sushiscript/blob/master/include/sushi/lexer/detail/source-stream.h)或者token流上都非常方便。
 
-常规的词法分析部分大致是一个不严谨的自动机，通过lookahead来判断下一步需要提取的token，[`sushi/lexer/context.cpp`](#link-todo)和[`sushi/lexer/lexeme.cpp`](#link-todo)包含了一般的lookahead之后dispatch，并且在这个过程中修改[自动机状态](#link-todo)。
+常规的词法分析部分大致是一个不严谨的自动机，通过lookahead来判断下一步需要提取的token，[`sushi/lexer/context.cpp`](https://github.com/Sushiscript/sushiscript/blob/master/src/sushi/lexer/context.cpp)和[`sushi/lexer/lexeme.cpp`](https://github.com/Sushiscript/sushiscript/blob/master/src/sushi/lexer/lexeme.cpp)包含了一般的lookahead之后dispatch，并且在这个过程中修改[自动机状态](https://github.com/Sushiscript/sushiscript/blob/master/include/sushi/lexer/detail/lexer-state.h)。
 
-常规的parser部分是常规的手写parser实现：不严谨的类LL(k)的top-down parser加上[operator precedence parser](https://en.wikipedia.org/wiki/Operator_precedence_parser)来处理二元运算符优先级的情况（[`sushi/parser/parser.cpp`](#link-todo) 包含了parser的完整实现，文件比较长不过都是基于语法结构的top-down parsing）。
+常规的parser部分是常规的手写parser实现：不严谨的类LL(k)的top-down parser加上[operator precedence parser](https://en.wikipedia.org/wiki/Operator_precedence_parser)来处理二元运算符优先级的情况（[`sushi/parser/parser.cpp`](https://github.com/Sushiscript/sushiscript/blob/master/src/sushi/parser/parser.cpp) 包含了parser的完整实现，文件比较长不过都是基于语法结构的top-down parsing）。
 
 #### 字符串插值与context
 
 几乎整个前端的难度都落在实现编译期的[字符串插值](https://en.wikipedia.org/wiki/String_interpolation)上。简言之，为了实现字符串插值，lexer在提取字符串的过程中还需要检测“插值”开始的信号，并且在插值开始后要产生正常状态下的token，之后需要在“合适的时机”切换回提取字符串的模式。
 
-因此我们引入上下文（context）的概念，在lexer提取字符串，路径等字面值时，从普通上下文进入一个“可被插值”的上下文，这个上下文中允许的字符依赖字面值的类型有不同，当然这个性质也被抽象出来了（见[`sushi/lexer/detail/character-config.h`](#link-todo)）。在可被插值上下文中，lexer检测插值的开始，插值开始后，lexer再次进入普通上下文。那么这个因插值产生的普通上下文何时结束呢？这里就需要parser的配合，parser需要在插值开始后，监测插值的结束，并且在插值结束后通知lexer返回之前的可插值上下文。可插值上下文的主要实现见[`sushi/lexer/context.h`](#link-todo)。插值过程中lexer和parser之间通过token传递信息的方式见**_文档2.6: Interpolation Context_**，对于可插值的字面值，见文档中词法结构中出现`<interpolation>`的位置。
+因此我们引入上下文（context）的概念，在lexer提取字符串，路径等字面值时，从普通上下文进入一个“可被插值”的上下文，这个上下文中允许的字符依赖字面值的类型有不同，当然这个性质也被抽象出来了（见[`sushi/lexer/detail/character-config.h`](https://github.com/Sushiscript/sushiscript/blob/master/include/sushi/lexer/detail/character-config.h)）。在可被插值上下文中，lexer检测插值的开始，插值开始后，lexer再次进入普通上下文。那么这个因插值产生的普通上下文何时结束呢？这里就需要parser的配合，parser需要在插值开始后，监测插值的结束，并且在插值结束后通知lexer返回之前的可插值上下文。可插值上下文的主要实现见[`sushi/lexer/context.h`](https://github.com/Sushiscript/sushiscript/blob/master/include/sushi/lexer/context.h)。插值过程中lexer和parser之间通过token传递信息的方式见**_文档2.6: Interpolation Context_**，对于可插值的字面值，见文档中词法结构中出现`<interpolation>`的位置。
 
-剩下的问题就是解耦上下文产生token以及lexer和上下文交互的过程，这里的实现借鉴了[状态模式](https://en.wikipedia.org/wiki/State_pattern)，只不过这里的状态不仅仅是一个状态，而是一个状态栈。不同的上下文在产生token时，同时产生控制信息，告诉lexer是应该1. 进入一个新的上下文 2. 退出当前上下文 3. 保持当前上下文。lexer对上下文产生消息的反应见[`sushi/lexer/lexer.h: Lexer::ExecuteAction()`](#link-todo)
+剩下的问题就是解耦上下文产生token以及lexer和上下文交互的过程，这里的实现借鉴了[状态模式](https://en.wikipedia.org/wiki/State_pattern)，只不过这里的状态不仅仅是一个状态，而是一个状态栈。不同的上下文在产生token时，同时产生控制信息，告诉lexer是应该1. 进入一个新的上下文 2. 退出当前上下文 3. 保持当前上下文。lexer对上下文产生消息的反应见[`sushi/lexer/lexer.h: Lexer::ExecuteAction()`](https://github.com/Sushiscript/sushiscript/blob/master/include/sushi/lexer/lexer.h)
 
 剩下的实现部分基本上就是一些苦力活了。
 
