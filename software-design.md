@@ -58,7 +58,7 @@
 
 ### 作用域生成与检查
 
-本阶段的主要任务是 **生成作用域** 和 **检查重定义/未定义** ，该阶段会产出 `Scope` 和 `Environment` 两个结果。
+本阶段的主要任务是 **生成作用域** 和 **检查重定义/未定义** ，该阶段会产出 [`Scope`](https://github.com/Sushiscript/sushiscript/blob/master/include/sushi/scope/scope.h) 和 [`Environment`](https://github.com/Sushiscript/sushiscript/blob/master/include/sushi/scope/environment.h) 两个结果。
 
 Scope 即作用域，其中记录着该作用域中定义的标识符。在遍历语法树时，遇到 **变量定义**、**函数定义**、**基于range的for语句** 则要在相应作用域插入标识符，下面将这几种情况总称为“定义”。
 
@@ -70,7 +70,7 @@ Environment 中提供 通过`Program`（语法上函数体/if语句主体等称�
 + 当遇到对标识符的 **使用** 时，搜索该标识符是否已经在作用域（包括父作用域）中有定义，如果有，则将 该标识符 与 当前的（即使用该标识符的）Scope 的对应关系插入到Environment中；如果没有，则是未定义错误
 + 当遇到对标识符的 **定义** 时，搜索该标识符是否已经在 **同一个** 作用域中有定义，如果有，则是重定义错误；如果没有，则向当前所在的 Scope 插入该标识符的信息
 
-该阶段的实现难度不大，主要难度在于如何测试生成的 Environment 和 Scope 的正确性。当前的测试方法是: 按从上到下的顺序得到所有 Scope 和所有 Identifier，测试时输入每个 Scope 中所有的标识符 和 每个 Identifier 对应的“使用它的” Scope 来进行验证。
+该阶段的实现难度不大，主要难度在于如何[测试](https://github.com/Sushiscript/sushiscript/blob/master/test/scope/util.h)生成的 Environment 和 Scope 的正确性。当前的测试方法是: 按从上到下的顺序得到所有 Scope 和所有 Identifier，测试时输入每个 Scope 中所有的标识符 和 每个 Identifier 对应的“使用它的” Scope 来进行验证。
 
 ### 类型推导与检查
 
@@ -86,11 +86,11 @@ Environment 中提供 通过`Program`（语法上函数体/if语句主体等称�
 
 代码生成部分的核心部分——也是难点部分在于如何将语法树的内容完整地对应到目标语言中，这要求对目标语言也有较多的了解；此外，还要考虑如何在目标代码中实现一些前端语言有而目标语言没有的特性。下面阐述的是代码生成的几个难点问题
 
-1. Scope: 在 bash 语言中，虽有 `local` 声明符，但是其作用只是将变量作用域限制在函数中，而在 if/for 等语句中不存在作用域，那么在代码生成中就需要一些操作让他们“变得”有作用域。其实现方法是
+1. Scope: 在 bash 语言中，虽有 `local` 声明符，但是其作用只是将变量作用域限制在函数中，而在 if/for 等语句中不存在作用域，那么在代码生成中就需要一些操作让他们[“变得”有作用域](https://github.com/Sushiscript/sushiscript/blob/master/include/sushi/code-generation/scope-manager.h)。其实现方法是
 	1. 对所有 “定义” ，都会先搜索相同标识符是否在作用域（包括父作用域）中有定义，如果有，则添加特定后缀让它们在生成的代码不同
 	2. 对所有的 Program 中定义的变量，在 Program 代码生成的最后会对所有新变量进行 `unset`
-2. 某些在 `sushiscript` 中的表达式，在 `bash` 中需要翻译为 多条表达式/语句 ，对于这种情况，代码生成中所有表达式的翻译结果都会包含两部分，分别是 `code_before` 和 `val` —— `code_before` 是该表达式的前置语句， `val` 是该 `sushiscript` 表达式最终形成的 `bash` 表达式，通常 `val` 的形式是 `${identifier}`；某些情况下可能上层的翻译只想要 `bash` 表达式的 `bash` 标识符，因此翻译时除了生成 `code_before` 和 `val` ，还会生成 `raw_id` 表示这只是一个标识符。
-3. 为了简化翻译代码、实现某些功能，代码生成会在 `bash` 脚本中加入一些“`sushiscript`内建变量/函数”，如：
+2. 某些在 `sushiscript` 中的表达式，在 `bash` 中需要翻译为 多条表达式/语句 ，对于这种情况，代码生成中所有表达式的翻译结果都会包含两部分，分别是 [`code_before`](https://github.com/Sushiscript/sushiscript/blob/master/include/sushi/code-generation/visitor/expr-visitor.h#L33) 和 [`val`](https://github.com/Sushiscript/sushiscript/blob/master/include/sushi/code-generation/visitor/expr-visitor.h#L32) —— `code_before` 是该表达式的前置语句， `val` 是该 `sushiscript` 表达式最终形成的 `bash` 表达式，通常 `val` 的形式是 `${identifier}`；某些情况下可能上层的翻译只想要 `bash` 表达式的 `bash` 标识符，因此翻译时除了生成 `code_before` 和 `val` ，还会生成 [`raw_id`](https://github.com/Sushiscript/sushiscript/blob/master/include/sushi/code-generation/visitor/expr-visitor.h#L34) 表示这只是一个标识符。
+3. 为了简化翻译代码、实现某些功能，代码生成会在 `bash` 脚本中加入一些[“`sushiscript`内建变量/函数”](https://github.com/Sushiscript/sushiscript/blob/master/include/sushi/code-generation/builtin-bash.h)，如：
 	1. `bash` 中函数的 return 返回的是表示 Exit Status 的整数，而 `sushiscript` 支持的是 return 任何类型。代码生成实现的方法是使用 `_sushi_func_ret_` 变量，存储函数中的“返回值”
 	2. `sushiscript` 支持对字符串使用 `*` 运算符，表示重复该字符串多次。代码生成实现的方法是内建一个函数 `_sushi_dup_str_` 来简化翻译
 
