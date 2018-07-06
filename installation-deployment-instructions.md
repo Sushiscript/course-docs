@@ -37,10 +37,15 @@ cmake .. && make install
 
 ## 常见问题解决方法
 1. 如何安装python及conan
+
   建议您访问python与conan的相关文章寻找安装引导。
+
 2. make install提示需要root权限
+
   请改为键入以下指令
   `sudo make install`
   并在提示输入密码的时候键入您的管理员密码。
+
 3. make install报错
+
   请仔细检查安装中的第二步是否是按照顺序逐行输入，检查中途有无错误提示。
