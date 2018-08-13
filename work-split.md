@@ -7,7 +7,7 @@
 | 15331344 | 薛明淇 | [VinaLx](https://github.com/VinaLx)           | 语言设计、Lexer、Parser、TypeSystem实现 |  45%   |
 | 15331224 | 卢家熙 | [DaddyTrap](https://github.com/DaddyTrap)     | 部分Scope、CodeGen 实现                |  25%   |
 | 15331115 | 黄锦添 | [jskyzero](https://github.com/jskyzero)       | 部分Scope、PipeLine实现、附属文档编写                                        |   15%     |
-| 15331112 | 黄鼎   | [Algebra2016](https://github.com/Algebra2016) |          蝠属文档编写、测试                               |  15%      |
+| 15331112 | 黄鼎   | [Algebra2016](https://github.com/Algebra2016) |  附属属文档编写、测试                           |  15%      |
 
 ### 制品与贡献率
 
